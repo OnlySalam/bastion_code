@@ -10,9 +10,7 @@ jobs:
             - name: "checksout the repository"
               uses: actions/checkout@v4
 
-            - name: "Set up Docker"
-              uses: docker/setup-qemu-action@v2
-
+            
             - name: "Log in to Docker"
               uses: docker/login-action@v3
               with: 
@@ -51,6 +49,9 @@ jobs:
             # - name: "Run the Docker image"
             #   run: |
             #     sudo docker run -d -p 80:80 --name apitest -e PORT=${{ secrets.PORTS }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }}
+
+            # - name: "Set up Docker"
+            #   uses: docker/setup-qemu-action@v2
 
 
             - name: Deploy to bastion-ec2
