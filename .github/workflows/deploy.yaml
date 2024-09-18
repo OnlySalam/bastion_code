@@ -54,14 +54,25 @@ jobs:
             #   uses: docker/setup-qemu-action@v2
 
 
-            - name: Deploy to bastion-ec2
-              uses: appleboy/ssh-action@v0.1.7
-              with:
-                host: ${{ secrets.AWS_EC2_INSTANCE_2 }}
-                username: ubuntu
-                key: ${{ secrets.SSH_PRIVATE_KEY }}
-                script: |
-                    docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }}
-                    # docker stop ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }} || true
-                    # docker rm ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }} || true
-                    docker run -d --name bastion_image -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }}
+            # - name: Deploy to bastion-ec2
+            #   uses: appleboy/ssh-action@v0.1.7
+            #   with:
+            #     host: ${{ secrets.AWS_EC2_INSTANCE_2 }}
+            #     username: ubuntu
+            #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+            #     script: |
+                    
+            #         # docker stop ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }} || true
+            #         # docker rm ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }} || true
+                    
+                    
+            - name: Build & Deploy
+              env:
+                PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                HOSTNAME: ${{secrets.SSH_HOST}}
+                USER_NAME: ${{secrets.USER_NAME}}  
+              run: |
+                echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+                ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} << EOF
+                sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }}
+                sudo docker run -d --name bastion_image -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }}
