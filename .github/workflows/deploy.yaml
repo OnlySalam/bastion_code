@@ -24,13 +24,13 @@ jobs:
                 echo "image_name=apitest" >> $GITHUB_OUTPUT
                 
             
-            - name: 'Delete any running container'
-              run: |
-                sudo docker stop apitest && sudo docker rm apitest
+            # - name: 'Delete any running container'
+            #   run: |
+            #     sudo docker stop apitest && sudo docker rm apitest
                 
-            - name: "Remove any images on the system"
-              run: |
-                sudo docker rmi -f $( sudo docker images -q)
+            # - name: "Remove any images on the system"
+            #   run: |
+            #     sudo docker rmi -f $( sudo docker images -q)
                 
             - name: "Build a Docker Image"
               run: |
