@@ -29,9 +29,9 @@ jobs:
             #   run: |
             #     sudo docker stop apitest && sudo docker rm apitest
                 
-            # - name: "Remove any images on the system"
-            #   run: |
-            #     sudo docker rmi -f $( sudo docker images -q)
+            - name: "Remove any images on the system"
+              run: |
+                sudo docker rmi -f $( sudo docker images -q)
                 
             - name: "Build a Docker Image"
               run: |
@@ -87,4 +87,4 @@ jobs:
                 sudo apt-get update
                 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
                 sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }}
-                sudo docker run -d --name bastion_image -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }}
+                sudo docker run -d --name bastion_images -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.tag_generator.outputs.image_name }}:${{ steps.tag_generator.outputs.deployment_tag }}
